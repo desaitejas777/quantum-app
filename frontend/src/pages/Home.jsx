@@ -20,7 +20,7 @@ function TopicCard({ title, desc, icon, color, onClick }) {
 }
 
 // ─── Main Home Page ───────────────────────────────────────────────────────────
-function Home({ setPage, isLoggedIn, setUsername, setLoggedIn, setIsAdmin }) {
+function Home({ setPage, isLoggedIn, setUsername, setLoggedIn, setIsAdmin, organizationRole, setOrganizationRole }) {
   // Local state for form inputs
   const [nameInput, setNameInput] = useState('');
   const [codeInput, setCodeInput] = useState('');
@@ -75,7 +75,7 @@ function Home({ setPage, isLoggedIn, setUsername, setLoggedIn, setIsAdmin }) {
         <div className="card" style={{ maxWidth: '400px', margin: '0 auto 36px', textAlign: 'center' }}>
           <div style={{ fontSize: '1.5rem', marginBottom: '8px' }}>👤</div>
           <div style={{ fontWeight: 700, marginBottom: '4px' }}>Enter your name to begin</div>
-          <div style={{ color: 'var(--muted)', fontSize: '0.85rem', marginBottom: '16px' }}>Your progress and quiz scores will be saved.</div>
+          <div style={{ color: 'var(--muted)', fontSize: '0.85rem', marginBottom: '16px' }}>Choose a team view to tailor PQC migration guidance.</div>
           <input
             className="input"
             placeholder="e.g. Tejas Desai"
@@ -84,6 +84,20 @@ function Home({ setPage, isLoggedIn, setUsername, setLoggedIn, setIsAdmin }) {
             onKeyDown={e => e.key === 'Enter' && handleLogin()}
             style={{ marginBottom: '10px' }}
           />
+          <label className="role-picker-label" htmlFor="organization-role">Organization role</label>
+          <select
+            id="organization-role"
+            className="input role-picker"
+            value={organizationRole}
+            onChange={event => setOrganizationRole(event.target.value)}
+            style={{ marginBottom: '10px' }}
+          >
+            <option value="HR">HR</option>
+            <option value="IT">IT</option>
+            <option value="Developer">Developer</option>
+            <option value="Planning">Planning</option>
+          </select>
+          <p className="role-demo-note">Demo role selection only. Internal access requires company SSO and server-enforced permissions.</p>
           {isAdminName && (
             <>
               <input
@@ -109,7 +123,7 @@ function Home({ setPage, isLoggedIn, setUsername, setLoggedIn, setIsAdmin }) {
           )}
           {error && <div style={{ color: 'var(--red)', fontSize: '0.82rem', marginBottom: '8px' }}>{error}</div>}
           <button className="btn btn-blue" onClick={handleLogin} style={{ width: '100%' }}>
-            Start Learning →
+            Continue →
           </button>
         </div>
       ) : (
@@ -133,7 +147,7 @@ function Home({ setPage, isLoggedIn, setUsername, setLoggedIn, setIsAdmin }) {
 
       {/* Quick nav to quiz + progress */}
       {isLoggedIn && (
-        <div style={{ display: 'flex', gap: '12px', justifyContent: 'center' }}>
+        <div className="page-actions" style={{ justifyContent: 'center' }}>
           <button className="btn btn-purple" onClick={() => setPage('quiz')}>Take the Quiz ✎</button>
           <button className="btn btn-ghost" onClick={() => setPage('progress')}>View My Progress ▲</button>
         </div>

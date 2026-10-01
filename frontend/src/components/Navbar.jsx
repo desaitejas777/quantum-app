@@ -1,7 +1,7 @@
 // Navbar.jsx — Navigation bar. Receives setPage prop from App.jsx.
 // Clicking a nav item calls setPage(), which updates App's currentPage state.
 
-import React from 'react';
+import React, { useState } from 'react';
 
 const NAV = [
   { id: 'home',     label: 'Home',     icon: '⌂' },
@@ -10,12 +10,17 @@ const NAV = [
   { id: 'circuit',  label: 'Circuits', icon: '⊞' },
   { id: 'quiz',     label: 'Quiz',     icon: '✎' },
   { id: 'progress', label: 'Progress', icon: '▲' },
+  { id: 'pqc',      label: 'PQC Compare', icon: '⌁' },
 ];
+const MOBILE_PRIMARY = NAV.filter(item => ['home', 'qubit', 'pqc'].includes(item.id));
+const MOBILE_MORE = NAV.filter(item => ['bloch', 'circuit', 'quiz', 'progress'].includes(item.id));
 
-function Navbar({ currentPage, setPage, username, isLoggedIn }) {
+function Navbar({ currentPage, setPage, username, isLoggedIn, organizationRole }) {
+  const [isMoreOpen, setIsMoreOpen] = useState(false);
+
   return (
     <>
-      <nav className="navbar" style={s.nav}>
+      <nav className="navbar" style={s.nav} aria-label="Primary navigation">
         {/* Brand */}
         <div style={s.brand} className="brand">
           <span style={s.atom}>⚛</span>
@@ -33,7 +38,7 @@ function Navbar({ currentPage, setPage, username, isLoggedIn }) {
               type="button"
               onClick={() => setPage(item.id)}
               className={`nav-link${currentPage === item.id ? ' active' : ''}`}
-              style={{ ...s.link, ...(currentPage === item.id ? s.active : {}) }}
+              aria-current={currentPage === item.id ? 'page' : undefined}
             >
               <span className="nav-icon">{item.icon}</span>
               <span className="nav-label">{item.label}</span>
@@ -44,25 +49,53 @@ function Navbar({ currentPage, setPage, username, isLoggedIn }) {
         {/* User chip */}
         <div style={s.user} className="nav-user">
           {isLoggedIn
-            ? <span style={s.userChip}>👤 {username}</span>
+            ? <span style={s.userChip}>👤 {username} · {organizationRole}</span>
             : <span style={{ ...s.userChip, color: 'var(--muted)', fontSize: '0.78rem' }}>Not logged in</span>
           }
         </div>
       </nav>
 
-      <div className="mobile-nav">
-        {NAV.map(item => (
+      <nav className="mobile-nav" aria-label="Primary navigation" onKeyDown={event => event.key === 'Escape' && setIsMoreOpen(false)}>
+        {MOBILE_PRIMARY.map(item => (
           <button
             key={item.id}
             type="button"
-            onClick={() => setPage(item.id)}
+            onClick={() => { setIsMoreOpen(false); setPage(item.id); }}
             className={`nav-link${currentPage === item.id ? ' active' : ''}`}
+            aria-current={currentPage === item.id ? 'page' : undefined}
           >
             <span className="nav-icon">{item.icon}</span>
             <span className="nav-label">{item.label}</span>
           </button>
         ))}
-      </div>
+        <div className="mobile-more">
+          <button
+            type="button"
+            className={`nav-link mobile-more-trigger${MOBILE_MORE.some(item => item.id === currentPage) ? ' active' : ''}`}
+            aria-expanded={isMoreOpen}
+            aria-controls="mobile-more-menu"
+            onClick={() => setIsMoreOpen(open => !open)}
+          >
+            <span className="nav-icon" aria-hidden="true">•••</span>
+            <span className="nav-label">More</span>
+          </button>
+          {isMoreOpen && (
+            <div className="mobile-more-menu" id="mobile-more-menu" aria-label="More destinations">
+              {MOBILE_MORE.map(item => (
+                <button
+                  key={item.id}
+                  type="button"
+                  className={`mobile-more-item${currentPage === item.id ? ' active' : ''}`}
+                  aria-current={currentPage === item.id ? 'page' : undefined}
+                  onClick={() => { setPage(item.id); setIsMoreOpen(false); }}
+                >
+                  <span aria-hidden="true">{item.icon}</span>{item.label}
+                </button>
+              ))}
+            </div>
+          )}
+        </div>
+      </nav>
     </>
   );
 }
@@ -81,17 +114,6 @@ const s = {
   brandName: { fontFamily: 'Orbitron, sans-serif', fontWeight: 700, fontSize: '1rem', color: 'var(--blue)', letterSpacing: '-0.5px' },
   brandSub: { fontSize: '0.62rem', color: 'var(--muted)', letterSpacing: '1px', textTransform: 'uppercase' },
   links: { display: 'flex', gap: '2px' },
-  link: {
-    background: 'transparent', border: 'none', color: 'var(--muted)',
-    cursor: 'pointer', padding: '7px 12px', borderRadius: '7px',
-    fontFamily: 'Inter, sans-serif', fontWeight: 500, fontSize: '0.82rem',
-    display: 'flex', alignItems: 'center', gap: '5px', transition: 'all 0.18s',
-  },
-  active: {
-    background: 'rgba(99,179,237,0.2)',
-    color: 'var(--blue)',
-    borderBottom: '2px solid var(--blue)',
-  },
   user: { minWidth: '120px', textAlign: 'right' },
   userChip: { fontSize: '0.82rem', color: 'var(--blue)', fontWeight: 500 },
 };

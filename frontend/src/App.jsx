@@ -9,6 +9,7 @@ import BlochPage from './pages/BlochPage';
 import CircuitPage from './pages/CircuitPage';
 import QuizPage from './pages/QuizPage';
 import ProgressPage from './pages/ProgressPage';
+import PqcComparePage from './pages/PqcComparePage';
 import './App.css';
 
 function App() {
@@ -17,6 +18,7 @@ function App() {
   const [username, setUsername] = useState('');
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [organizationRole, setOrganizationRole] = useState('IT');
 
   // ── Page renderer — functional component navigation ───────────────────────
   const renderPage = () => {
@@ -24,13 +26,14 @@ function App() {
     const commonProps = { setPage: setCurrentPage, username };
 
     switch (currentPage) {
-      case 'home':     return <Home     {...commonProps} isLoggedIn={isLoggedIn} setUsername={setUsername} setLoggedIn={setIsLoggedIn} setIsAdmin={setIsAdmin} />;
+      case 'home':     return <Home     {...commonProps} isLoggedIn={isLoggedIn} setUsername={setUsername} setLoggedIn={setIsLoggedIn} setIsAdmin={setIsAdmin} organizationRole={organizationRole} setOrganizationRole={setOrganizationRole} />;
       case 'qubit':    return <QubitPage  {...commonProps} />;
       case 'bloch':    return <BlochPage  {...commonProps} />;
       case 'circuit':  return <CircuitPage {...commonProps} />;
       case 'quiz':     return <QuizPage   {...commonProps} />;
       case 'progress': return <ProgressPage {...commonProps} isAdmin={isAdmin} />;
-      default:         return <Home     {...commonProps} isLoggedIn={isLoggedIn} setUsername={setUsername} setLoggedIn={setIsLoggedIn} setIsAdmin={setIsAdmin} />;
+      case 'pqc':      return <PqcComparePage organizationRole={organizationRole} />;
+      default:         return <Home     {...commonProps} isLoggedIn={isLoggedIn} setUsername={setUsername} setLoggedIn={setIsLoggedIn} setIsAdmin={setIsAdmin} organizationRole={organizationRole} setOrganizationRole={setOrganizationRole} />;
     }
   };
 
@@ -41,6 +44,7 @@ function App() {
         setPage={setCurrentPage}
         username={username}
         isLoggedIn={isLoggedIn}
+        organizationRole={organizationRole}
       />
       <main className="content fade-in">
         {renderPage()}

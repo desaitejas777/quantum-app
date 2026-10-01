@@ -95,7 +95,7 @@ function BlochPage({ setPage, username }) {
 
   return (
     <div className="fade-in">
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+      <div className="page-heading">
         <div>
           <h1 className="page-title">Bloch Sphere</h1>
           <p className="page-subtitle">Every qubit state as a point on a sphere</p>
@@ -156,7 +156,7 @@ function BlochPage({ setPage, username }) {
         </div>
       </div>
 
-      <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '12px' }}>
+      <div className="page-actions">
         <button className="btn btn-ghost" onClick={() => setPage('qubit')}>← Back</button>
         <button className="btn btn-green" onClick={markComplete}>Mark Complete & Continue →</button>
       </div>

@@ -14,7 +14,7 @@ function BitComparison({ classical, qubitState }) {
   };
 
   return (
-    <div style={{ display: 'flex', gap: '24px', justifyContent: 'center', padding: '16px 0' }}>
+    <div className="comparison-row" style={{ display: 'flex', gap: '24px', justifyContent: 'center', padding: '16px 0' }}>
       {/* Classical bit */}
       <div style={{ textAlign: 'center' }}>
         <div style={{ fontSize: '0.7rem', color: 'var(--muted)', letterSpacing: '1.5px', marginBottom: '10px' }}>CLASSICAL BIT</div>
@@ -120,7 +120,7 @@ function QubitPage({ setPage, username }) {
 
   return (
     <div className="fade-in">
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+      <div className="page-heading">
         <div>
           <h1 className="page-title">Qubits & Superposition</h1>
           <p className="page-subtitle">How quantum bits differ from classical bits</p>
@@ -138,7 +138,7 @@ function QubitPage({ setPage, username }) {
           <p style={{ color: 'var(--text)', fontSize: '0.95rem', lineHeight: 1.7, marginBottom: '20px' }}>
             {STEPS[step].body}
           </p>
-          <div style={{ display: 'flex', gap: '10px' }}>
+          <div className="button-row">
             <button className="btn btn-ghost" onClick={() => setStep(s => Math.max(0, s - 1))} disabled={step === 0}>← Prev</button>
             <button className="btn btn-blue"  onClick={() => setStep(s => Math.min(STEPS.length - 1, s + 1))} disabled={step === STEPS.length - 1}>Next →</button>
           </div>
@@ -185,7 +185,7 @@ function QubitPage({ setPage, username }) {
         </div>
       </div>
 
-      <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '12px' }}>
+      <div className="page-actions">
         <button className="btn btn-ghost" onClick={() => setPage('home')}>← Back</button>
         <button className="btn btn-green" onClick={markComplete}>Mark Complete & Continue →</button>
       </div>

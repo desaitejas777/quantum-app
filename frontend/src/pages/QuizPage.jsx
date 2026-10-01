@@ -154,7 +154,7 @@ function QuizPage({ setPage, username }) {
           ))}
         </div>
 
-        <div style={{ display: 'flex', gap: '10px', justifyContent: 'center' }}>
+        <div className="page-actions" style={{ justifyContent: 'center' }}>
           <button className="btn btn-blue" onClick={() => { setIdx(0); setSelected(null); setRevealed(false); setAnswers([]); setDone(false); setSaved(false); }}>
             Retry Quiz
           </button>
@@ -166,7 +166,7 @@ function QuizPage({ setPage, username }) {
 
   return (
     <div className="fade-in" style={{ maxWidth: '620px', margin: '0 auto' }}>
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '6px' }}>
+      <div className="page-heading quiz-heading" style={{ alignItems: 'center', marginBottom: '6px' }}>
         <h1 className="page-title">Quiz</h1>
         <span style={{ color: 'var(--muted)', fontSize: '0.88rem' }}>Q {idx + 1} / {QUESTIONS.length}</span>
       </div>

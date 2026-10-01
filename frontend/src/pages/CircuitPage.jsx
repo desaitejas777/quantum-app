@@ -123,7 +123,7 @@ function CircuitPage({ setPage, username }) {
 
   return (
     <div className="fade-in">
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start' }}>
+      <div className="page-heading">
         <div>
           <h1 className="page-title">Quantum Circuits</h1>
           <p className="page-subtitle">Build and simulate simple quantum gate circuits</p>
@@ -215,7 +215,7 @@ function CircuitPage({ setPage, username }) {
         </div>
       </div>
 
-      <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '12px' }}>
+      <div className="page-actions">
         <button className="btn btn-ghost" onClick={() => setPage('bloch')}>← Back</button>
         <button className="btn btn-green" onClick={markComplete}>Finish Lessons → Take Quiz</button>
       </div>

@@ -178,7 +178,7 @@ function ProgressPage({ setPage, username, isAdmin }) {
         )}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
           {leaderboard.map((entry, i) => (
-            <div key={i} style={{
+            <div key={i} className="leaderboard-row" style={{
               display: 'flex', alignItems: 'center', gap: '14px',
               padding: '10px 12px', borderRadius: '8px',
               background: entry._id === username ? 'rgba(99,179,237,0.08)' : 'var(--bg2)',
