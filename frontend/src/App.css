@@ -353,3 +353,40 @@ body {
   .pqc-sidebar { padding-top: 5px; padding-bottom: 5px; }
   .pqc-section-link { padding-top: 6px; padding-bottom: 6px; }
 }
+
+/* Cyber-Quantum Palette Overrides for Algorithm Advisor Tab */
+#advisor, [id*="advisor"], .algorithm-advisor {
+  background-color: #0A0F1D !important;
+  color: #94A3B8 !important;
+}
+
+#advisor h1, #advisor h2, #advisor h3, #advisor h4, #advisor .section-title {
+  color: #F8FAFC !important;
+}
+
+#advisor select, #advisor input, #advisor .card,
+#advisor .pqc-advisor-form, #advisor .pqc-winner,
+#advisor .pqc-clean-card, #advisor .pqc-candidate {
+  background-color: #1E293B !important;
+  color: #F8FAFC !important;
+  border-color: rgba(56, 189, 248, 0.3) !important;
+}
+
+#advisor .pqc-advisor-form label, #advisor .pqc-winner p,
+#advisor .pqc-clean-card-heading p, #advisor .pqc-candidate-heading h4,
+#advisor .pqc-metric-heading, #advisor .pqc-metric-heading strong,
+#advisor .pqc-metric small, #advisor .pqc-reasons,
+#advisor .pqc-result-kicker, #advisor .pqc-picker-note,
+#advisor .pqc-assessing, #advisor .pqc-signature-context {
+  color: #94A3B8 !important;
+}
+
+#advisor .pqc-submit, #advisor .pqc-text-link {
+  border-color: rgba(56, 189, 248, 0.3) !important;
+  background-color: #1E293B !important;
+  color: #F8FAFC !important;
+}
+
+#advisor a, #advisor .highlight, #advisor .pqc-text-link {
+  color: #38BDF8 !important;
+}
