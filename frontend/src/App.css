@@ -285,8 +285,8 @@ body {
   .mobile-more-trigger .nav-icon { font-size: 0.9rem; letter-spacing: 1px; }
   .mobile-more-menu { position: absolute; right: 0; bottom: calc(100% + 9px); display: grid; width: 190px; max-width: calc(100vw - 24px); padding: 5px; border: 1px solid rgba(0,0,0,0.12); background: #fff; box-shadow: 0 5px 20px rgba(0,0,0,0.15); }
   .mobile-more-item { display: flex; align-items: center; gap: 10px; min-height: 44px; padding: 8px 10px; border: 0; background: transparent; color: var(--text); text-align: left; font: 500 0.8rem 'Inter', sans-serif; cursor: pointer; }
-  .mobile-more-item:hover, .mobile-more-item.active { background: #e3f1ed; color: #145e56; }
-  .mobile-more-item > span { width: 20px; text-align: center; color: #0d746c; font-size: 1rem; }
+  .mobile-more-item:hover, .mobile-more-item.active { background: rgba(99,179,237,0.2); color: var(--blue); }
+  .mobile-more-item > span { width: 20px; text-align: center; color: var(--blue); font-size: 1rem; }
 }
 
 @media (max-width: 760px) {
