@@ -1,10 +1,20 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
+import { pqcAdvisorApi } from '../services/pqcAdvisorApi';
 
 const SECTIONS = [
   { id: 'overview', label: 'Overview', index: '01' },
-  { id: 'algorithms', label: 'Algorithm comparison', index: '02' },
-  { id: 'organization', label: 'Who should act', index: '03' },
-  { id: 'hosting', label: 'Intranet hosting', index: '04' },
+  { id: 'advisor', label: 'Algorithm advisor', index: '02' },
+  { id: 'algorithms', label: 'Algorithm comparison', index: '03' },
+  { id: 'organization', label: 'Who should act', index: '04' },
+  { id: 'hosting', label: 'Intranet hosting', index: '05' },
+];
+
+const DEFAULT_PICKER = { task: '', priority: '', footprint: '' };
+const WHAT_NEXT = [
+  'Inventory the systems, protocols, certificates, and vendors that would be affected.',
+  'Review the use case and compatibility requirements with your IT and security teams.',
+  'Test a supported implementation in a staging pilot; measure interoperability and performance.',
+  'Agree on key management, monitoring, rollout ownership, and a rollback plan before production.',
 ];
 
 const COMPARISONS = [
@@ -103,13 +113,183 @@ function AlgorithmPanel({ data, variant }) {
   );
 }
 
+function ComparisonMetric({ label, score, detail }) {
+  const measured = Number.isFinite(score);
+  return (
+    <div className="pqc-metric">
+      <div className="pqc-metric-heading">
+        <span>{label}</span>
+        <strong>{measured ? `${Math.round(score)} / 100` : 'Not assessed'}</strong>
+      </div>
+      <div
+        className={`pqc-metric-track${measured ? '' : ' is-unknown'}`}
+        role="img"
+        aria-label={measured ? `${label}: ${Math.round(score)} out of 100` : `${label}: not assessed by this tool`}
+      >
+        {measured && <span style={{ width: `${Math.max(0, Math.min(100, score))}%` }} />}
+      </div>
+      {detail && <small>{detail}</small>}
+    </div>
+  );
+}
+
+function CandidateComparison({ candidates, winner }) {
+  const eligible = candidates.slice(0, 3);
+  return (
+    <section className="pqc-clean-card" aria-labelledby="pqc-comparison-title">
+      <div className="pqc-clean-card-heading">
+        <h3 id="pqc-comparison-title">Compare the options</h3>
+        <p>Measured scores are relative to the eligible benchmark results. Compatibility and effort are not benchmarked.</p>
+      </div>
+      <div className="pqc-candidate-grid">
+        {eligible.map(candidate => (
+          <article className={`pqc-candidate${candidate.mechanism === winner.mechanism ? ' is-recommended' : ''}`} key={candidate.mechanism}>
+            <div className="pqc-candidate-heading">
+              <h4>{candidate.mechanism}</h4>
+              {candidate.mechanism === winner.mechanism && <span>Best fit</span>}
+            </div>
+            <ComparisonMetric label="Security" score={candidate.criterion_scores.security} detail={`NIST category ${candidate.security_category}`} />
+            <ComparisonMetric label="Performance" score={candidate.criterion_scores.speed} detail="Relative benchmark score; higher is better" />
+            <ComparisonMetric label="Compatibility" detail="Check support in your protocols, clients, and vendors" />
+            <ComparisonMetric label="Implementation effort" detail="Depends on your current systems and rollout" />
+          </article>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+function WhatNext({ onViewHosting }) {
+  const [checked, setChecked] = useState([]);
+  return (
+    <section className="pqc-clean-card pqc-next-card" aria-labelledby="pqc-next-title">
+      <div className="pqc-clean-card-heading">
+        <h3 id="pqc-next-title">What next?</h3>
+        <p>A cautious starting checklist for your organization—not a deployment plan.</p>
+      </div>
+      <ul className="pqc-checklist">
+        {WHAT_NEXT.map((step, index) => (
+          <li key={step}>
+            <label>
+              <input
+                type="checkbox"
+                checked={checked.includes(index)}
+                onChange={() => setChecked(current => current.includes(index) ? current.filter(item => item !== index) : [...current, index])}
+              />
+              <span>{step}</span>
+            </label>
+          </li>
+        ))}
+      </ul>
+      <button type="button" className="pqc-text-link" onClick={onViewHosting}>Read the intranet rollout guide</button>
+      <p className="pqc-disclaimer">Recommendations are guidance to support evaluation, not automated security decisions or approval to deploy. Confirm requirements with your organization’s security team.</p>
+    </section>
+  );
+}
+
+function RecommendationPanel({ assessment, onViewHosting }) {
+  const { recommendation, ranking } = assessment;
+  const winner = ranking[0];
+  return (
+    <div className="pqc-result" aria-live="polite">
+      <section className="pqc-winner" aria-labelledby="pqc-winner-title">
+        <span className="pqc-result-kicker">RECOMMENDED STARTING POINT</span>
+        <h3 id="pqc-winner-title">{recommendation.mechanism}</h3>
+        <p>{recommendation.standard}</p>
+        <p className="pqc-winner-headline">{recommendation.headline}</p>
+        <ul className="pqc-reasons">{recommendation.reasons.map(reason => <li key={reason}>{reason}</li>)}</ul>
+      </section>
+      <CandidateComparison candidates={ranking} winner={winner} />
+      <WhatNext key={recommendation.mechanism} onViewHosting={onViewHosting} />
+    </div>
+  );
+}
+
+function SignatureGuidance({ onViewHosting, priority, footprint }) {
+  const priorityLabels = { security: 'security', performance: 'performance', simplicity: 'simplicity' };
+  const footprintLabels = { small: 'small', medium: 'medium', large: 'large' };
+  return (
+    <div className="pqc-result" aria-live="polite">
+      <section className="pqc-winner" aria-labelledby="pqc-signature-title">
+        <span className="pqc-result-kicker">LEARNING STARTING POINT · NOT BENCHMARK-RANKED</span>
+        <h3 id="pqc-signature-title">Explore ML-DSA-65</h3>
+        <p>NIST FIPS 204</p>
+        <p className="pqc-winner-headline">ML-DSA is a standardized post-quantum digital signature family. ML-DSA-65 is one candidate to discuss for signing and verification workflows; this advisor does not benchmark or select signature algorithms.</p>
+        <p className="pqc-signature-context">Your planning focus: {priorityLabels[priority]}; {footprintLabels[footprint]} footprint.</p>
+      </section>
+      <section className="pqc-clean-card" aria-labelledby="pqc-signature-comparison-title">
+        <div className="pqc-clean-card-heading">
+          <h3 id="pqc-signature-comparison-title">What to evaluate</h3>
+          <p>This recommender has measured key-agreement data only. It has no signature benchmark or evidence for compatibility and implementation effort.</p>
+        </div>
+        <div className="pqc-signature-metrics">
+          <ComparisonMetric label="Security" detail="Review the required NIST security category with your security team" />
+          <ComparisonMetric label="Performance" detail="Benchmark signing and verification in your environment" />
+          <ComparisonMetric label="Compatibility" detail="Check certificates, firmware, clients, and vendor support" />
+          <ComparisonMetric label="Implementation effort" detail="Estimate migration work for signing workflows and key management" />
+        </div>
+      </section>
+      <WhatNext key="signature" onViewHosting={onViewHosting} />
+    </div>
+  );
+}
+
 function PqcComparePage({ organizationRole = 'IT' }) {
   const [activeSection, setActiveSection] = useState('overview');
+  const [picker, setPicker] = useState(DEFAULT_PICKER);
+  const [assessment, setAssessment] = useState(null);
+  const [signatureSelected, setSignatureSelected] = useState(false);
+  const [assessmentError, setAssessmentError] = useState('');
+  const [assessing, setAssessing] = useState(false);
   const roleInfo = ROLE_GUIDANCE[organizationRole] || ROLE_GUIDANCE.IT;
 
   const goToSection = (sectionId) => {
     setActiveSection(sectionId);
     document.getElementById(sectionId)?.scrollIntoView({ behavior: 'smooth', block: 'start' });
+  };
+
+  const updatePicker = (patch) => {
+    setPicker(current => ({ ...current, ...patch }));
+    setAssessment(null);
+    setSignatureSelected(false);
+    setAssessmentError('');
+  };
+
+  const submitAssessment = async (event) => {
+    event.preventDefault();
+    if (picker.task === 'signature') {
+      setSignatureSelected(true);
+      setAssessment(null);
+      setAssessmentError('');
+      return;
+    }
+
+    const priorityValues = {
+      security: { security: 3, speed: 1, size: 1, resources: 1 },
+      performance: { security: 2, speed: 3, size: 1, resources: 1 },
+      simplicity: { security: 2, speed: 2, size: 1, resources: 1 },
+    }[picker.priority];
+    const footprintPriority = { small: 3, medium: 2, large: 1 }[picker.footprint];
+    const requirements = {
+      organization_name: '',
+      application_name: '',
+      application_type: 'intranet_portal',
+      min_security_category: 1,
+      priorities: { ...priorityValues, size: footprintPriority, resources: footprintPriority },
+      finalized_standards_only: true,
+    };
+
+    setAssessing(true);
+    setAssessment(null);
+    setSignatureSelected(false);
+    setAssessmentError('');
+    try {
+      setAssessment(await pqcAdvisorApi.assess(requirements));
+    } catch (error) {
+      setAssessmentError(error.message);
+    } finally {
+      setAssessing(false);
+    }
   };
 
   return (
@@ -142,15 +322,76 @@ function PqcComparePage({ organizationRole = 'IT' }) {
         <section className="pqc-intro" id="overview">
           <div className="pqc-eyebrow">CRYPTOGRAPHY TRANSITION / 2026</div>
           <h1>Plan the move to post-quantum cryptography.</h1>
-          <p>Compare familiar public-key algorithms with standardized post-quantum options, then turn the differences into a practical organization plan.</p>
-          <div className="pqc-intro-meta">
-            <span>KEY ESTABLISHMENT</span><i /> <span>DIGITAL SIGNATURES</span><i /> <span>INTRANET READINESS</span>
+          <p>Learn the basics, get a benchmark-based algorithm recommendation, and turn the result into a practical organization plan.</p>
+        </section>
+
+        <section className="pqc-section" id="advisor">
+          <div className="pqc-section-heading">
+            <div><span className="pqc-eyebrow">01 / ADVISOR</span><h2>Find a suitable starting point</h2></div>
+            <p>Answer three quick questions. You can revise your choices at any time.</p>
           </div>
+          <form className="pqc-advisor-form" onSubmit={submitAssessment}>
+            <div className="pqc-picker-step">
+              <span className="pqc-step-number">01</span>
+              <label htmlFor="pqc-task">
+                <span>What are you trying to do?</span>
+                <select id="pqc-task" value={picker.task} onChange={event => updatePicker({ task: event.target.value, priority: '', footprint: '' })} required>
+                  <option value="">Choose a task</option>
+                  <option value="key-agreement">Agree on a shared secret (key agreement)</option>
+                  <option value="signature">Sign or verify data (digital signature)</option>
+                </select>
+              </label>
+            </div>
+            {picker.task && (
+              <div className="pqc-picker-step">
+                <span className="pqc-step-number">02</span>
+                <label htmlFor="pqc-priority">
+                  <span>What matters most?</span>
+                  <select id="pqc-priority" value={picker.priority} onChange={event => updatePicker({ priority: event.target.value, footprint: '' })} required>
+                    <option value="">Choose a priority</option>
+                    <option value="security">Security</option>
+                    <option value="performance">Performance</option>
+                    <option value="simplicity">Simplicity</option>
+                  </select>
+                </label>
+              </div>
+            )}
+            {picker.priority && (
+              <div className="pqc-picker-step">
+                <span className="pqc-step-number">03</span>
+                <label htmlFor="pqc-footprint">
+                  <span>How large is your input or footprint?</span>
+                  <select id="pqc-footprint" value={picker.footprint} onChange={event => updatePicker({ footprint: event.target.value })} required>
+                    <option value="">Choose a size</option>
+                    <option value="small">Small — tight bandwidth or memory</option>
+                    <option value="medium">Medium — typical application</option>
+                    <option value="large">Large — fewer size constraints</option>
+                  </select>
+                </label>
+              </div>
+            )}
+            {picker.task && picker.priority && picker.footprint && (
+              <>
+                <p className="pqc-picker-note">
+                  {picker.task === 'key-agreement'
+                    ? `Key-agreement results use stored benchmark measurements. ${picker.priority === 'simplicity' ? 'Simplicity is not measured directly; this choice uses a balanced security/performance profile. ' : ''}Compatibility and effort still need review in your environment.`
+                    : 'Signature algorithms are not benchmarked by this tool. You will see a learning starting point and the items your team should evaluate.'}
+                </p>
+                <button className="pqc-submit" type="submit" disabled={assessing}>
+                  {assessing ? 'Comparing measured results…' : 'Show recommendation'}
+                </button>
+              </>
+            )}
+          </form>
+          {assessmentError && <div className="pqc-advisor-error" role="alert"><strong>Could not create a recommendation.</strong><span>{assessmentError}</span></div>}
+          {assessing && <p className="pqc-assessing" role="status">Scoring the measured benchmark results against your choices…</p>}
+          {assessment && <RecommendationPanel assessment={assessment} onViewHosting={() => goToSection('hosting')} />}
+          {signatureSelected && <SignatureGuidance priority={picker.priority} footprint={picker.footprint} onViewHosting={() => goToSection('hosting')} />}
         </section>
 
         <section className="pqc-section" id="algorithms">
           <div className="pqc-section-heading">
-            <div><span className="pqc-eyebrow">01 / COMPARE</span><h2>What changes, and what does not</h2></div>
+            <div><span className="pqc-eyebrow">02 / LEARN</span><h2>What changes, and what does not</h2></div>
             <p>Two different jobs: agree on a secret to protect a conversation, or sign data to show who approved it.</p>
           </div>
           <div className="pqc-plain-guide" aria-label="Plain-language cryptography guide">
@@ -175,7 +416,7 @@ function PqcComparePage({ organizationRole = 'IT' }) {
 
         <section className="pqc-section" id="organization">
           <div className="pqc-section-heading">
-            <div><span className="pqc-eyebrow">02 / ORGANIZE</span><h2>Recommended for your area</h2></div>
+            <div><span className="pqc-eyebrow">03 / ORGANIZE</span><h2>Recommended for your area</h2></div>
             <span className="pqc-role-chip">Viewing as {organizationRole}</span>
           </div>
           <div className="pqc-role-panel">
@@ -191,7 +432,7 @@ function PqcComparePage({ organizationRole = 'IT' }) {
 
         <section className="pqc-section" id="hosting">
           <div className="pqc-section-heading">
-            <div><span className="pqc-eyebrow">03 / DEPLOY</span><h2>Host the tool on your intranet</h2></div>
+            <div><span className="pqc-eyebrow">04 / DEPLOY</span><h2>Host the tool on your intranet</h2></div>
             <p>Keep the comparison available to staff without exposing internal infrastructure to the public internet.</p>
           </div>
           <div className="pqc-hosting-flow">

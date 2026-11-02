@@ -52,6 +52,22 @@ quantum-app/
 
 ## Setup & Run Instructions
 
+The **Algorithm Advisor** page uses the PQC recommender API in `qwerty\QuantProject`.
+Start that API in a separate PowerShell terminal:
+
+```powershell
+cd D:\MCA\projects\qwerty\QuantProject\backend
+python -m uvicorn app.main:app --host 127.0.0.1 --port 8000
+```
+
+Then start QuantumLearn as below. Key-agreement recommendations use stored
+benchmark measurements; compatibility and implementation effort are not scored.
+Digital-signature selection currently shows an educational ML-DSA starting point
+only; the recommender does not benchmark signatures. To point the frontend at a
+different API host, set `REACT_APP_PQC_API_URL` before starting the frontend. For
+a deployed frontend, configure `PQC_CORS_ORIGINS` on the PQC API to allow that
+frontend's exact origin.
+
 ### 1. Start MongoDB
 Make sure MongoDB is running locally:
 ```bash

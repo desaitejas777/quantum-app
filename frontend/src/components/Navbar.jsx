@@ -10,7 +10,7 @@ const NAV = [
   { id: 'circuit',  label: 'Circuits', icon: '⊞' },
   { id: 'quiz',     label: 'Quiz',     icon: '✎' },
   { id: 'progress', label: 'Progress', icon: '▲' },
-  { id: 'pqc',      label: 'PQC Compare', icon: '⌁' },
+  { id: 'pqc',      label: 'Algorithm Advisor', icon: '⌁' },
 ];
 const MOBILE_PRIMARY = NAV.filter(item => ['home', 'qubit', 'pqc'].includes(item.id));
 const MOBILE_MORE = NAV.filter(item => ['bloch', 'circuit', 'quiz', 'progress'].includes(item.id));
