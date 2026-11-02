@@ -11,10 +11,10 @@ const SECTIONS = [
 
 const DEFAULT_PICKER = { task: '', priority: '', footprint: '' };
 const WHAT_NEXT = [
-  'Inventory the systems, protocols, certificates, and vendors that would be affected.',
-  'Review the use case and compatibility requirements with your IT and security teams.',
-  'Test a supported implementation in a staging pilot; measure interoperability and performance.',
-  'Agree on key management, monitoring, rollout ownership, and a rollback plan before production.',
+  'Inventory affected systems, protocols, certificates, and vendors.',
+  'Confirm use-case and compatibility needs with IT and security.',
+  'Pilot a supported implementation; test interoperability and performance.',
+  'Plan key management, monitoring, ownership, and rollback.',
 ];
 
 const COMPARISONS = [
@@ -22,40 +22,40 @@ const COMPARISONS = [
     category: 'Key establishment',
     current: {
       name: 'ECDH P-256 key agreement',
-      explanation: 'Elliptic Curve Diffie-Hellman is widely used to agree on a secret over a network. P-256 names the curve parameters.',
-      input: 'Each side combines its private key with the other side’s public key.',
-      output: 'Both sides derive the same shared secret; the secret itself is never sent.',
-      strength: 'Fast, compact, and widely supported. Ephemeral ECDH can also provide forward secrecy for past sessions if a long-term key is later exposed.',
-      drawback: 'A sufficiently capable quantum computer could recover the private keys from recorded public-key exchanges, putting recorded sessions at risk.',
+      explanation: 'A widely supported network key exchange; P-256 identifies the curve.',
+      input: 'Your private key and the other party’s public key.',
+      output: 'Both parties derive the same secret; it is never sent.',
+      strength: 'Fast, compact, and widely supported. Ephemeral ECDH can protect past sessions if a long-term key is exposed.',
+      drawback: 'A capable quantum computer could recover keys from recorded exchanges.',
     },
     next: {
       name: 'ML-KEM-768 with a hybrid rollout',
-      explanation: 'A standardized way to establish a shared secret using public and private keys, designed for the quantum era.',
+      explanation: 'A standardized way to establish a quantum-resistant shared secret.',
       standard: 'NIST FIPS 203',
       input: 'Recipient public key and fresh encapsulation randomness',
       output: 'A shared secret plus a ciphertext sent to the recipient',
-      drawback: 'Larger messages, library and protocol compatibility work, and careful key lifecycle testing are required.',
-      benefit: 'Designed to resist known quantum attacks. A hybrid deployment can retain a classical key exchange during a staged transition.',
+      drawback: 'Larger messages; test library, protocol, and key lifecycle support.',
+      benefit: 'Designed to resist known quantum attacks; hybrid rollout retains classical exchange during transition.',
     },
   },
   {
     category: 'Digital signatures',
     current: {
       name: 'ECDSA P-256',
-      explanation: 'Elliptic Curve Digital Signature Algorithm: a common way to sign and verify software, certificates, and messages.',
+      explanation: 'A widely used algorithm for signing and verifying data.',
       input: 'Private signing key and a message digest',
       output: 'A compact signature verified with the public key',
-      strength: 'Compact signatures and broad support in certificates, devices, and software-signing workflows.',
-      drawback: 'A sufficiently capable quantum computer could derive the signing key, undermining trust in signed software, certificates, and updates.',
+      strength: 'Compact signatures with broad certificate, device, and software support.',
+      drawback: 'A capable quantum computer could recover signing keys and undermine trust in signatures.',
     },
     next: {
       name: 'ML-DSA-65',
-      explanation: 'A standardized post-quantum digital signature algorithm for checking who signed data and whether it changed.',
+      explanation: 'A standardized post-quantum algorithm for signing and verifying data.',
       standard: 'NIST FIPS 204',
       input: 'Private signing key and a message',
       output: 'A post-quantum signature verified with the public key',
-      drawback: 'Signatures and keys are larger; certificate chains, firmware limits, and vendor support need testing.',
-      benefit: 'Designed to remain secure against known quantum attacks and suited to software signing, certificates, and document integrity workflows.',
+      drawback: 'Larger keys and signatures; test certificate, firmware, and vendor support.',
+      benefit: 'Designed to resist known quantum attacks; used for signatures, certificates, and integrity checks.',
     },
   },
 ];
@@ -63,19 +63,19 @@ const COMPARISONS = [
 const ROLE_GUIDANCE = {
   HR: {
     title: 'People, identity, and communication',
-    actions: ['Coordinate staff notices and training for new signing and certificate workflows.', 'Work with IT on employee identity records, joiner and leaver processes, and support guidance.', 'Avoid collecting cryptographic secrets or personal data in the comparison tool.'],
+    actions: ['Coordinate staff training for new signing and certificate workflows.', 'Align identity and joiner/leaver processes with IT.', 'Never collect cryptographic secrets or personal data in this tool.'],
   },
   IT: {
     title: 'Infrastructure and security operations',
-    actions: ['Inventory TLS endpoints, VPNs, certificates, appliances, backups, and key-management services.', 'Prioritize data that must remain confidential for many years and systems exposed to untrusted networks.', 'Pilot hybrid key establishment with supported vendors; monitor latency, message size, and interoperability.'],
+    actions: ['Inventory TLS, VPNs, certificates, appliances, backups, and key services.', 'Prioritize long-lived confidential data and internet-facing systems.', 'Pilot hybrid key exchange; measure latency, message size, and interoperability.'],
   },
   Developer: {
     title: 'Applications and product engineering',
-    actions: ['Find direct cryptography calls and replace hard-coded algorithms with supported provider interfaces.', 'Test protocol negotiation, certificate sizes, signing pipelines, mobile clients, and rollback paths.', 'Use maintained cryptographic libraries; do not implement algorithms in application code.'],
+    actions: ['Find direct crypto calls; replace hard-coded algorithms with provider interfaces.', 'Test negotiation, certificate sizes, signing, mobile clients, and rollback.', 'Use maintained crypto libraries; never implement algorithms yourself.'],
   },
   Planning: {
     title: 'Portfolio, risk, and procurement',
-    actions: ['Assign system owners and record vendor readiness, dependencies, and contract renewal dates.', 'Rank migrations by data shelf-life, exposure, business impact, and replacement lead time.', 'Fund discovery and pilots first, then sequence upgrades with measurable exit criteria.'],
+    actions: ['Assign system owners; track vendor readiness, dependencies, and renewals.', 'Prioritize by data lifetime, exposure, impact, and replacement lead time.', 'Fund discovery and pilots; sequence upgrades with clear exit criteria.'],
   },
 };
 
@@ -139,7 +139,7 @@ function CandidateComparison({ candidates, winner }) {
     <section className="pqc-clean-card" aria-labelledby="pqc-comparison-title">
       <div className="pqc-clean-card-heading">
         <h3 id="pqc-comparison-title">Compare the options</h3>
-        <p>Measured scores are relative to the eligible benchmark results. Compatibility and effort are not benchmarked.</p>
+        <p>Scores compare eligible benchmarks. Compatibility and effort are not measured.</p>
       </div>
       <div className="pqc-candidate-grid">
         {eligible.map(candidate => (
@@ -150,8 +150,8 @@ function CandidateComparison({ candidates, winner }) {
             </div>
             <ComparisonMetric label="Security" score={candidate.criterion_scores.security} detail={`NIST category ${candidate.security_category}`} />
             <ComparisonMetric label="Performance" score={candidate.criterion_scores.speed} detail="Relative benchmark score; higher is better" />
-            <ComparisonMetric label="Compatibility" detail="Check support in your protocols, clients, and vendors" />
-            <ComparisonMetric label="Implementation effort" detail="Depends on your current systems and rollout" />
+            <ComparisonMetric label="Compatibility" detail="Check protocol, client, and vendor support" />
+            <ComparisonMetric label="Implementation effort" detail="Depends on your systems and rollout" />
           </article>
         ))}
       </div>
@@ -165,7 +165,7 @@ function WhatNext({ onViewHosting }) {
     <section className="pqc-clean-card pqc-next-card" aria-labelledby="pqc-next-title">
       <div className="pqc-clean-card-heading">
         <h3 id="pqc-next-title">What next?</h3>
-        <p>A cautious starting checklist for your organization—not a deployment plan.</p>
+        <p>A starting checklist, not a deployment plan.</p>
       </div>
       <ul className="pqc-checklist">
         {WHAT_NEXT.map((step, index) => (
@@ -182,7 +182,7 @@ function WhatNext({ onViewHosting }) {
         ))}
       </ul>
       <button type="button" className="pqc-text-link" onClick={onViewHosting}>Read the intranet rollout guide</button>
-      <p className="pqc-disclaimer">Recommendations are guidance to support evaluation, not automated security decisions or approval to deploy. Confirm requirements with your organization’s security team.</p>
+      <p className="pqc-disclaimer">Use recommendations for evaluation only—not as security approval to deploy. Confirm with your security team.</p>
     </section>
   );
 }
@@ -214,19 +214,19 @@ function SignatureGuidance({ onViewHosting, priority, footprint }) {
         <span className="pqc-result-kicker">LEARNING STARTING POINT · NOT BENCHMARK-RANKED</span>
         <h3 id="pqc-signature-title">Explore ML-DSA-65</h3>
         <p>NIST FIPS 204</p>
-        <p className="pqc-winner-headline">ML-DSA is a standardized post-quantum digital signature family. ML-DSA-65 is one candidate to discuss for signing and verification workflows; this advisor does not benchmark or select signature algorithms.</p>
+        <p className="pqc-winner-headline">ML-DSA is a standardized post-quantum signature family. Consider ML-DSA-65 for signing and verification; this advisor does not benchmark or select signatures.</p>
         <p className="pqc-signature-context">Your planning focus: {priorityLabels[priority]}; {footprintLabels[footprint]} footprint.</p>
       </section>
       <section className="pqc-clean-card" aria-labelledby="pqc-signature-comparison-title">
         <div className="pqc-clean-card-heading">
           <h3 id="pqc-signature-comparison-title">What to evaluate</h3>
-          <p>This recommender has measured key-agreement data only. It has no signature benchmark or evidence for compatibility and implementation effort.</p>
+          <p>Only key-agreement data is benchmarked. Signature performance, compatibility, and effort are not assessed.</p>
         </div>
         <div className="pqc-signature-metrics">
-          <ComparisonMetric label="Security" detail="Review the required NIST security category with your security team" />
-          <ComparisonMetric label="Performance" detail="Benchmark signing and verification in your environment" />
-          <ComparisonMetric label="Compatibility" detail="Check certificates, firmware, clients, and vendor support" />
-          <ComparisonMetric label="Implementation effort" detail="Estimate migration work for signing workflows and key management" />
+          <ComparisonMetric label="Security" detail="Confirm the NIST category with your security team" />
+          <ComparisonMetric label="Performance" detail="Benchmark signing and verification" />
+          <ComparisonMetric label="Compatibility" detail="Check certificate, firmware, client, and vendor support" />
+          <ComparisonMetric label="Implementation effort" detail="Estimate signing and key-management work" />
         </div>
       </section>
       <WhatNext key="signature" onViewHosting={onViewHosting} />
@@ -322,13 +322,13 @@ function PqcComparePage({ organizationRole = 'IT' }) {
         <section className="pqc-intro" id="overview">
           <div className="pqc-eyebrow">CRYPTOGRAPHY TRANSITION / 2026</div>
           <h1>Plan the move to post-quantum cryptography.</h1>
-          <p>Learn the basics, get a benchmark-based algorithm recommendation, and turn the result into a practical organization plan.</p>
+          <p>Learn the basics, compare algorithms, and plan your organization’s next steps.</p>
         </section>
 
         <section className="pqc-section" id="advisor">
           <div className="pqc-section-heading">
             <div><span className="pqc-eyebrow">01 / ADVISOR</span><h2>Find a suitable starting point</h2></div>
-            <p>Answer three quick questions. You can revise your choices at any time.</p>
+            <p>Answer three questions to get started.</p>
           </div>
           <form className="pqc-advisor-form" onSubmit={submitAssessment}>
             <div className="pqc-picker-step">
@@ -374,8 +374,8 @@ function PqcComparePage({ organizationRole = 'IT' }) {
               <>
                 <p className="pqc-picker-note">
                   {picker.task === 'key-agreement'
-                    ? `Key-agreement results use stored benchmark measurements. ${picker.priority === 'simplicity' ? 'Simplicity is not measured directly; this choice uses a balanced security/performance profile. ' : ''}Compatibility and effort still need review in your environment.`
-                    : 'Signature algorithms are not benchmarked by this tool. You will see a learning starting point and the items your team should evaluate.'}
+                    ? `Based on stored benchmark data. ${picker.priority === 'simplicity' ? 'Simplicity is not measured; this uses a balanced profile. ' : ''}Check compatibility and effort in your environment.`
+                      : 'Signatures are not benchmarked. Review this learning starting point with your team.'}
                 </p>
                 <button className="pqc-submit" type="submit" disabled={assessing}>
                   {assessing ? 'Comparing measured results…' : 'Show recommendation'}
@@ -384,7 +384,7 @@ function PqcComparePage({ organizationRole = 'IT' }) {
             )}
           </form>
           {assessmentError && <div className="pqc-advisor-error" role="alert"><strong>Could not create a recommendation.</strong><span>{assessmentError}</span></div>}
-          {assessing && <p className="pqc-assessing" role="status">Scoring the measured benchmark results against your choices…</p>}
+          {assessing && <p className="pqc-assessing" role="status">Scoring benchmark results…</p>}
           {assessment && <RecommendationPanel assessment={assessment} onViewHosting={() => goToSection('hosting')} />}
           {signatureSelected && <SignatureGuidance priority={picker.priority} footprint={picker.footprint} onViewHosting={() => goToSection('hosting')} />}
         </section>
@@ -392,12 +392,12 @@ function PqcComparePage({ organizationRole = 'IT' }) {
         <section className="pqc-section" id="algorithms">
           <div className="pqc-section-heading">
             <div><span className="pqc-eyebrow">02 / LEARN</span><h2>What changes, and what does not</h2></div>
-            <p>Two different jobs: agree on a secret to protect a conversation, or sign data to show who approved it.</p>
+            <p>Key establishment protects conversations; signatures verify who approved data.</p>
           </div>
           <div className="pqc-plain-guide" aria-label="Plain-language cryptography guide">
-            <article><span>01 / AGREE</span><strong>Key establishment</strong><p>Two systems create the same secret so they can encrypt a conversation.</p></article>
-            <article><span>02 / PROVE</span><strong>Digital signature</strong><p>A tamper-evident seal that helps verify who signed something.</p></article>
-            <article><span>03 / TRANSITION</span><strong>Hybrid rollout</strong><p>Use classical and post-quantum methods together while systems are upgraded.</p></article>
+            <article><span>01 / AGREE</span><strong>Key establishment</strong><p>Systems create a shared secret to encrypt conversations.</p></article>
+            <article><span>02 / PROVE</span><strong>Digital signature</strong><p>Verify who signed data and whether it changed.</p></article>
+            <article><span>03 / TRANSITION</span><strong>Hybrid rollout</strong><p>Combine classical and post-quantum methods during upgrades.</p></article>
           </div>
           <div className="pqc-comparison-list">
             {COMPARISONS.map(pair => (
@@ -411,7 +411,7 @@ function PqcComparePage({ organizationRole = 'IT' }) {
               </div>
             ))}
           </div>
-          <p className="pqc-caveat"><strong>Why plan early?</strong> Attackers may save encrypted data now and try to decrypt it later. This matters most for information that must stay secret for many years. These are migration starting points, not drop-in replacements; confirm protocol support and vendor guidance before changing production systems.</p>
+          <p className="pqc-caveat"><strong>Why plan early?</strong> Attackers can store encrypted data for future decryption. Prioritize long-lived secrets. These are starting points, not drop-in replacements; confirm protocol and vendor support before deployment.</p>
         </section>
 
         <section className="pqc-section" id="organization">
@@ -433,7 +433,7 @@ function PqcComparePage({ organizationRole = 'IT' }) {
         <section className="pqc-section" id="hosting">
           <div className="pqc-section-heading">
             <div><span className="pqc-eyebrow">04 / DEPLOY</span><h2>Host the tool on your intranet</h2></div>
-            <p>Keep the comparison available to staff without exposing internal infrastructure to the public internet.</p>
+            <p>Give staff access without exposing internal infrastructure publicly.</p>
           </div>
           <div className="pqc-hosting-flow">
             <div className="pqc-hosting-origin"><span>INTERNAL ACCESS</span><strong>Staff browser</strong><small>Company network or managed VPN</small></div>
@@ -447,7 +447,7 @@ function PqcComparePage({ organizationRole = 'IT' }) {
             <article><span>DEVELOPMENT</span><h3>Maintain</h3><p>Build and test releases, track library updates, review dependencies, and keep the tool free of secrets.</p></article>
             <article><span>HR / PLANNING</span><h3>Coordinate</h3><p>Publish staff guidance, identify business owners, set priorities, and track training and procurement readiness.</p></article>
           </div>
-          <div className="pqc-security-note"><strong>Access-control boundary</strong><p>This prototype lets a user choose a role to tailor guidance. That choice is not authentication or authorization. For an internal deployment, connect company SSO and enforce group permissions on the server or identity-aware proxy.</p></div>
+          <div className="pqc-security-note"><strong>Access-control boundary</strong><p>Role selection is not authentication. For internal use, connect company SSO and enforce permissions on the server or identity-aware proxy.</p></div>
         </section>
 
         <footer className="pqc-footer"><span>Quantum readiness is a program, not a single algorithm swap.</span><button type="button" onClick={() => goToSection('overview')}>Back to overview ↑</button></footer>
