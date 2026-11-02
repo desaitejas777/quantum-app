@@ -82,7 +82,8 @@ const ROLE_GUIDANCE = {
 function AlgorithmPanel({ data, variant }) {
   const isModern = variant === 'modern';
   return (
-    <article className={`pqc-algorithm ${isModern ? 'pqc-algorithm-modern' : ''}`}>
+    <article className={`pqc-algorithm card-light ${isModern ? 'pqc-algorithm-modern' : ''}`}>
+      <span className="pqc-card-icon" aria-hidden="true">{isModern ? '◇' : '⌘'}</span>
       <div className="pqc-algorithm-topline">
         <span className="pqc-algorithm-kind">{isModern ? 'POST-QUANTUM PATH' : 'CURRENT BASELINE'}</span>
         {data.standard && <span className="pqc-standard">{data.standard}</span>}
@@ -109,6 +110,7 @@ function AlgorithmPanel({ data, variant }) {
           <p>{data.benefit}</p>
         </div>
       )}
+      <span className="pqc-card-arrow" aria-hidden="true">↗</span>
     </article>
   );
 }
@@ -143,7 +145,7 @@ function CandidateComparison({ candidates, winner }) {
       </div>
       <div className="pqc-candidate-grid">
         {eligible.map(candidate => (
-          <article className={`pqc-candidate${candidate.mechanism === winner.mechanism ? ' is-recommended' : ''}`} key={candidate.mechanism}>
+          <article className={`pqc-candidate card-light${candidate.mechanism === winner.mechanism ? ' is-recommended' : ''}`} key={candidate.mechanism}>
             <div className="pqc-candidate-heading">
               <h4>{candidate.mechanism}</h4>
               {candidate.mechanism === winner.mechanism && <span>Best fit</span>}
@@ -192,7 +194,7 @@ function RecommendationPanel({ assessment, onViewHosting }) {
   const winner = ranking[0];
   return (
     <div className="pqc-result" aria-live="polite">
-      <section className="pqc-winner" aria-labelledby="pqc-winner-title">
+      <section className="pqc-winner card-blue" aria-labelledby="pqc-winner-title">
         <span className="pqc-result-kicker">RECOMMENDED STARTING POINT</span>
         <h3 id="pqc-winner-title">{recommendation.mechanism}</h3>
         <p>{recommendation.standard}</p>
@@ -210,7 +212,7 @@ function SignatureGuidance({ onViewHosting, priority, footprint }) {
   const footprintLabels = { small: 'small', medium: 'medium', large: 'large' };
   return (
     <div className="pqc-result" aria-live="polite">
-      <section className="pqc-winner" aria-labelledby="pqc-signature-title">
+      <section className="pqc-winner card-blue" aria-labelledby="pqc-signature-title">
         <span className="pqc-result-kicker">LEARNING STARTING POINT · NOT BENCHMARK-RANKED</span>
         <h3 id="pqc-signature-title">Explore ML-DSA-65</h3>
         <p>NIST FIPS 204</p>
@@ -321,16 +323,18 @@ function PqcComparePage({ organizationRole = 'IT' }) {
       <div className="pqc-content">
         <section className="pqc-intro" id="overview">
           <div className="pqc-eyebrow">CRYPTOGRAPHY TRANSITION / 2026</div>
-          <h1>Plan the move to post-quantum cryptography.</h1>
+          <h1><span>Plan the move to</span> <strong>post-quantum cryptography.</strong></h1>
           <p>Learn the basics, get a benchmark-based algorithm recommendation, and turn the result into a practical organization plan.</p>
         </section>
 
         <section className="pqc-section" id="advisor">
-          <div className="pqc-section-heading">
-            <div><span className="pqc-eyebrow">01 / ADVISOR</span><h2>Find a suitable starting point</h2></div>
-            <p>Answer three quick questions. You can revise your choices at any time.</p>
-          </div>
-          <form className="pqc-advisor-form" onSubmit={submitAssessment}>
+          <div className="pqc-advisor-panel card-dark">
+            <span className="pqc-card-icon" aria-hidden="true">⌁</span>
+            <div className="pqc-section-heading">
+              <div><span className="pqc-eyebrow">01 / ADVISOR</span><h2>Find a suitable starting point</h2></div>
+              <p>Answer three quick questions. You can revise your choices at any time.</p>
+            </div>
+            <form className="pqc-advisor-form" onSubmit={submitAssessment}>
             <div className="pqc-picker-step">
               <span className="pqc-step-number">01</span>
               <label htmlFor="pqc-task">
@@ -382,7 +386,12 @@ function PqcComparePage({ organizationRole = 'IT' }) {
                 </button>
               </>
             )}
-          </form>
+            </form>
+            <div className="pqc-card-tags" aria-hidden="true">
+              <span>01 / ADVISOR</span><span>FIELD GUIDE</span>
+            </div>
+            <span className="pqc-card-arrow" aria-hidden="true">↗</span>
+          </div>
           {assessmentError && <div className="pqc-advisor-error" role="alert"><strong>Could not create a recommendation.</strong><span>{assessmentError}</span></div>}
           {assessing && <p className="pqc-assessing" role="status">Scoring the measured benchmark results against your choices…</p>}
           {assessment && <RecommendationPanel assessment={assessment} onViewHosting={() => goToSection('hosting')} />}
@@ -395,9 +404,24 @@ function PqcComparePage({ organizationRole = 'IT' }) {
             <p>Two different jobs: agree on a secret to protect a conversation, or sign data to show who approved it.</p>
           </div>
           <div className="pqc-plain-guide" aria-label="Plain-language cryptography guide">
-            <article><span>01 / AGREE</span><strong>Key establishment</strong><p>Two systems create the same secret so they can encrypt a conversation.</p></article>
-            <article><span>02 / PROVE</span><strong>Digital signature</strong><p>A tamper-evident seal that helps verify who signed something.</p></article>
-            <article><span>03 / TRANSITION</span><strong>Hybrid rollout</strong><p>Use classical and post-quantum methods together while systems are upgraded.</p></article>
+            <article className="card-light">
+              <span className="pqc-card-icon" aria-hidden="true">⌘</span>
+              <span className="pqc-card-tag">01 / AGREE</span><strong>Key establishment</strong>
+              <p>Two systems create the same secret so they can encrypt a conversation.</p>
+              <span className="pqc-card-arrow" aria-hidden="true">↗</span>
+            </article>
+            <article className="card-light">
+              <span className="pqc-card-icon" aria-hidden="true">◇</span>
+              <span className="pqc-card-tag">02 / PROVE</span><strong>Digital signature</strong>
+              <p>A tamper-evident seal that helps verify who signed something.</p>
+              <span className="pqc-card-arrow" aria-hidden="true">↗</span>
+            </article>
+            <article className="card-light">
+              <span className="pqc-card-icon" aria-hidden="true">⟳</span>
+              <span className="pqc-card-tag">03 / TRANSITION</span><strong>Hybrid rollout</strong>
+              <p>Use classical and post-quantum methods together while systems are upgraded.</p>
+              <span className="pqc-card-arrow" aria-hidden="true">↗</span>
+            </article>
           </div>
           <div className="pqc-comparison-list">
             {COMPARISONS.map(pair => (
@@ -421,7 +445,14 @@ function PqcComparePage({ organizationRole = 'IT' }) {
           </div>
           <div className="pqc-role-panel">
             <div className="pqc-role-heading"><span className="pqc-role-monogram">{organizationRole.slice(0, 2).toUpperCase()}</span><div><span>YOUR TEAM'S FIRST MOVES</span><h3>{roleInfo.title}</h3></div></div>
-            <ol>{roleInfo.actions.map((action, index) => <li key={action}><span>0{index + 1}</span><p>{action}</p></li>)}</ol>
+            <ol>{roleInfo.actions.map((action, index) => (
+              <li className={`pqc-role-card ${['card-dark', 'card-blue', 'card-light'][index]}`} key={action}>
+                <span className="pqc-card-icon" aria-hidden="true">{['⌘', '↗', '◇'][index]}</span>
+                <span className="pqc-card-tag">0{index + 1}</span>
+                <p>{action}</p>
+                <span className="pqc-card-arrow" aria-hidden="true">↗</span>
+              </li>
+            ))}</ol>
           </div>
           <div className="pqc-team-strip" aria-label="Teams involved in a PQC transition">
             {['IT', 'Developer', 'Planning', 'HR'].map(team => (

@@ -102,20 +102,20 @@ function Navbar({ currentPage, setPage, username, isLoggedIn, organizationRole }
 
 const s = {
   nav: {
-    background: 'linear-gradient(135deg,#ffffff,#f8f9fa)',
-    borderBottom: '1px solid rgba(0,0,0,0.1)',
+    background: 'var(--surface)',
+    borderBottom: '1px solid var(--muted-blue)',
     padding: '0 24px',
     display: 'flex', alignItems: 'center', justifyContent: 'space-between',
     height: '60px', position: 'sticky', top: 0, zIndex: 100,
-    boxShadow: '0 2px 16px rgba(0,0,0,0.1)',
+    boxShadow: 'var(--shadow-nav)',
   },
   brand: { display: 'flex', alignItems: 'center', gap: '10px' },
-  atom: { fontSize: '1.8rem', animation: 'spin 8s linear infinite', display: 'inline-block' },
-  brandName: { fontFamily: 'Orbitron, sans-serif', fontWeight: 700, fontSize: '1rem', color: 'var(--blue)', letterSpacing: '-0.5px' },
-  brandSub: { fontSize: '0.62rem', color: 'var(--muted)', letterSpacing: '1px', textTransform: 'uppercase' },
+  atom: { fontSize: '1.8rem', color: 'var(--primary)', display: 'inline-block' },
+  brandName: { fontFamily: 'Inter, sans-serif', fontWeight: 700, fontSize: '1rem', color: 'var(--ink)', letterSpacing: '-0.5px' },
+  brandSub: { fontSize: '0.62rem', color: 'var(--text-muted)', letterSpacing: '1px', textTransform: 'uppercase' },
   links: { display: 'flex', gap: '2px' },
   user: { minWidth: '120px', textAlign: 'right' },
-  userChip: { fontSize: '0.82rem', color: 'var(--blue)', fontWeight: 500 },
+  userChip: { fontSize: '0.82rem', color: 'var(--primary)', fontWeight: 500 },
 };
 
 export default Navbar;
