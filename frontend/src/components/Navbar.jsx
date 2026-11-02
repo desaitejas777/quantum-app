@@ -102,12 +102,12 @@ function Navbar({ currentPage, setPage, username, isLoggedIn, organizationRole }
 
 const s = {
   nav: {
-    background: 'var(--surface)',
-    borderBottom: '1px solid var(--muted-blue)',
+    background: 'linear-gradient(135deg,#ffffff,#f8f9fa)',
+    borderBottom: '1px solid rgba(0,0,0,0.1)',
     padding: '0 24px',
     display: 'flex', alignItems: 'center', justifyContent: 'space-between',
     height: '60px', position: 'sticky', top: 0, zIndex: 100,
-    boxShadow: 'var(--shadow-nav)',
+    boxShadow: '0 2px 16px rgba(0,0,0,0.1)',
   },
   brand: { display: 'flex', alignItems: 'center', gap: '10px' },
   atom: { fontSize: '1.8rem', animation: 'spin 8s linear infinite', display: 'inline-block' },
