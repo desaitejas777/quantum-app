@@ -81,11 +81,11 @@ each visitor's own computer.
    exact frontend origin, such as `https://quantum-app-jet.vercel.app`. Redeploy
    the API after changing the variable. Check that
    `https://your-api.vercel.app/api/health` returns `{"status":"ok", ...}`.
-3. In the frontend Vercel project's Environment Variables, set
-   `REACT_APP_PQC_API_URL` to `https://your-api.vercel.app` (the API origin
-   without `/api`). Set the frontend project's **Root Directory** to `frontend`
-   if it is not already. Redeploy after setting the variable because Create
-   React App embeds it at build time.
+3. Set the frontend project's **Root Directory** to `frontend` if it is not
+   already. The production frontend uses `https://pqc-api.vercel.app` by
+   default; set `REACT_APP_PQC_API_URL` only if you use a different API origin
+   (without `/api`). Redeploy after changing this variable because Create React
+   App embeds it at build time.
 4. Open the deployed site, choose a task, priority, and footprint, then select
    **Show recommendation**. If it fails, check the browser's Network tab for
    `/api/assessment` and confirm the API CORS setting contains the exact site

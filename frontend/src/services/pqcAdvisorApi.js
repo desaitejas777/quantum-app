@@ -1,15 +1,13 @@
 const configuredBase = process.env.REACT_APP_PQC_API_URL?.trim();
-const defaultBase = process.env.NODE_ENV === 'development' ? 'http://127.0.0.1:8000' : '';
+const defaultBase = process.env.NODE_ENV === 'development'
+  ? 'http://127.0.0.1:8000'
+  : 'https://pqc-api.vercel.app';
 const normalizedBase = (configuredBase || defaultBase).replace(/\/+$/, '');
 const API_BASE = normalizedBase
   ? (normalizedBase.endsWith('/api') ? normalizedBase : `${normalizedBase}/api`)
   : '';
 
 async function request(path, body) {
-  if (!API_BASE) {
-    throw new Error('The PQC recommender is not configured. Set REACT_APP_PQC_API_URL in the frontend deployment and redeploy.');
-  }
-
   let response;
   try {
     response = await fetch(`${API_BASE}${path}`, {
