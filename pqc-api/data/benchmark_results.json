@@ -1,0 +1,204 @@
+{
+  "schema_version": 2,
+  "meta": {
+    "generated_at": "2026-10-07T03:53:33.191889+00:00",
+    "library": "liboqs",
+    "library_version": null,
+    "source": "imported from an earlier run of this project",
+    "environment": {
+      "os": "Windows 11",
+      "cpu": "Intel64 Family 6 Model 154 Stepping 4, GenuineIntel",
+      "ram_gb": null,
+      "python_version": "3.14.3"
+    }
+  },
+  "records": [
+    {
+      "mechanism": "ML-KEM-512",
+      "family": "ML-KEM",
+      "security_category": 1,
+      "trials": 1000,
+      "keygen_us": {
+        "min": 67.9,
+        "max": 474.7,
+        "mean": 88.9513,
+        "median": 73.8,
+        "stddev": 39.6449
+      },
+      "encapsulation_us": {
+        "min": 72.0,
+        "max": 620.5,
+        "mean": 94.5449,
+        "median": 78.3,
+        "stddev": 46.5202
+      },
+      "decapsulation_us": {
+        "min": 27.9,
+        "max": 245.7,
+        "mean": 34.3125,
+        "median": 30.1,
+        "stddev": 12.5043
+      },
+      "public_key_bytes": 800,
+      "secret_key_bytes": 1632,
+      "ciphertext_bytes": 768,
+      "shared_secret_bytes": 32
+    },
+    {
+      "mechanism": "ML-KEM-768",
+      "family": "ML-KEM",
+      "security_category": 3,
+      "trials": 1000,
+      "keygen_us": {
+        "min": 81.4,
+        "max": 385.5,
+        "mean": 94.9225,
+        "median": 83.9,
+        "stddev": 32.7461
+      },
+      "encapsulation_us": {
+        "min": 85.1,
+        "max": 471.8,
+        "mean": 99.3575,
+        "median": 87.9,
+        "stddev": 35.9137
+      },
+      "decapsulation_us": {
+        "min": 40.4,
+        "max": 227.7,
+        "mean": 45.8794,
+        "median": 42.4,
+        "stddev": 13.6595
+      },
+      "public_key_bytes": 1184,
+      "secret_key_bytes": 2400,
+      "ciphertext_bytes": 1088,
+      "shared_secret_bytes": 32
+    },
+    {
+      "mechanism": "ML-KEM-1024",
+      "family": "ML-KEM",
+      "security_category": 5,
+      "trials": 1000,
+      "keygen_us": {
+        "min": 98.1,
+        "max": 578.2,
+        "mean": 117.0428,
+        "median": 102.9,
+        "stddev": 45.5902
+      },
+      "encapsulation_us": {
+        "min": 104.0,
+        "max": 471.2,
+        "mean": 122.109,
+        "median": 108.9,
+        "stddev": 41.449
+      },
+      "decapsulation_us": {
+        "min": 58.2,
+        "max": 365.6,
+        "mean": 66.6045,
+        "median": 61.6,
+        "stddev": 19.3246
+      },
+      "public_key_bytes": 1568,
+      "secret_key_bytes": 3168,
+      "ciphertext_bytes": 1568,
+      "shared_secret_bytes": 32
+    },
+    {
+      "mechanism": "HQC-1",
+      "family": "HQC",
+      "security_category": 1,
+      "trials": 1000,
+      "keygen_us": {
+        "min": 1096.1,
+        "max": 10074.4,
+        "mean": 1935.5811,
+        "median": 1598.15,
+        "stddev": 862.2721
+      },
+      "encapsulation_us": {
+        "min": 2167.2,
+        "max": 15793.8,
+        "mean": 3536.6506,
+        "median": 3044.95,
+        "stddev": 1263.4254
+      },
+      "decapsulation_us": {
+        "min": 3174.1,
+        "max": 35921.5,
+        "mean": 5089.6222,
+        "median": 4511.25,
+        "stddev": 1963.3647
+      },
+      "public_key_bytes": 2241,
+      "secret_key_bytes": 2321,
+      "ciphertext_bytes": 4433,
+      "shared_secret_bytes": 32
+    },
+    {
+      "mechanism": "HQC-3",
+      "family": "HQC",
+      "security_category": 3,
+      "trials": 1000,
+      "keygen_us": {
+        "min": 3037.3,
+        "max": 7289.0,
+        "mean": 3711.4769,
+        "median": 3605.9,
+        "stddev": 483.2117
+      },
+      "encapsulation_us": {
+        "min": 5901.6,
+        "max": 24638.3,
+        "mean": 7285.0793,
+        "median": 7191.35,
+        "stddev": 1038.085
+      },
+      "decapsulation_us": {
+        "min": 8809.0,
+        "max": 28053.3,
+        "mean": 10770.5071,
+        "median": 10723.85,
+        "stddev": 1090.0829
+      },
+      "public_key_bytes": 4514,
+      "secret_key_bytes": 4602,
+      "ciphertext_bytes": 8978,
+      "shared_secret_bytes": 32
+    },
+    {
+      "mechanism": "HQC-5",
+      "family": "HQC",
+      "security_category": 5,
+      "trials": 1000,
+      "keygen_us": {
+        "min": 7220.4,
+        "max": 34247.0,
+        "mean": 14366.2211,
+        "median": 9008.15,
+        "stddev": 8262.5556
+      },
+      "encapsulation_us": {
+        "min": 14577.8,
+        "max": 79214.5,
+        "mean": 28680.6931,
+        "median": 17570.0,
+        "stddev": 16496.0973
+      },
+      "decapsulation_us": {
+        "min": 22418.2,
+        "max": 90345.2,
+        "mean": 42833.2431,
+        "median": 26214.1,
+        "stddev": 24471.3443
+      },
+      "public_key_bytes": 7237,
+      "secret_key_bytes": 7333,
+      "ciphertext_bytes": 14421,
+      "shared_secret_bytes": 32
+    }
+  ],
+  "skipped": []
+}
