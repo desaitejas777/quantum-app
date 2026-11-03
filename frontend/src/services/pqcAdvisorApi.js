@@ -1,9 +1,15 @@
-const configuredBase = process.env.REACT_APP_PQC_API_URL || 'http://127.0.0.1:8000';
-const API_BASE = configuredBase.replace(/\/+$/, '').endsWith('/api')
-  ? configuredBase.replace(/\/+$/, '')
-  : `${configuredBase.replace(/\/+$/, '')}/api`;
+const configuredBase = process.env.REACT_APP_PQC_API_URL?.trim();
+const defaultBase = process.env.NODE_ENV === 'development' ? 'http://127.0.0.1:8000' : '';
+const normalizedBase = (configuredBase || defaultBase).replace(/\/+$/, '');
+const API_BASE = normalizedBase
+  ? (normalizedBase.endsWith('/api') ? normalizedBase : `${normalizedBase}/api`)
+  : '';
 
 async function request(path, body) {
+  if (!API_BASE) {
+    throw new Error('The PQC recommender is not configured. Set REACT_APP_PQC_API_URL in the frontend deployment and redeploy.');
+  }
+
   let response;
   try {
     response = await fetch(`${API_BASE}${path}`, {
@@ -12,7 +18,7 @@ async function request(path, body) {
       body: body ? JSON.stringify(body) : undefined,
     });
   } catch {
-    throw new Error('The PQC recommender server could not be reached. Start the QuantProject backend and try again.');
+    throw new Error('The PQC recommender server could not be reached. Check the configured API URL and make sure the backend is deployed.');
   }
 
   if (!response.ok) {

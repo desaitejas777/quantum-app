@@ -68,6 +68,43 @@ different API host, set `REACT_APP_PQC_API_URL` before starting the frontend. Fo
 a deployed frontend, configure `PQC_CORS_ORIGINS` on the PQC API to allow that
 frontend's exact origin.
 
+### Deploy the Algorithm Advisor to Vercel
+
+The frontend and recommender are separate deployments. The browser cannot use
+`127.0.0.1:8000` after deployment; that address refers to each visitor's own
+computer.
+
+1. Deploy `qwerty\QuantProject` as a separate Vercel project, using that folder
+   as the project root. Its `main.py` exposes the FastAPI app and the root
+   `requirements.txt` provides its Python dependencies. This folder is not part
+   of the `quantum-app` Git repository, so push it to its own repository or
+   deploy it from PowerShell with the Vercel CLI:
+
+   ```powershell
+   Set-Location D:\MCA\projects\qwerty\QuantProject
+   npx vercel
+   npx vercel --prod
+   ```
+
+   Set `PQC_CORS_ORIGINS` in the API project's Vercel environment to the exact
+   frontend origin, such as `https://your-frontend.vercel.app`, then deploy.
+   Check that `https://your-api.vercel.app/api/health` returns
+   `{"status":"ok", ...}`.
+2. In the frontend Vercel project, set
+   `REACT_APP_PQC_API_URL=https://your-api.vercel.app` for Production (and
+   Preview if needed). Use the API's origin only; the frontend adds `/api`.
+   Save and redeploy the frontend, because Create React App embeds this setting
+   at build time.
+3. Open the deployed site, choose a task, priority, and footprint, then select
+   **Show recommendation**. If it fails, check the browser's Network tab for
+   the `/api/assessment` request and confirm the API's CORS setting includes the
+   exact site origin.
+
+The recommender's stored benchmark data is included in the API project's
+`data\benchmark_results.json`. Vercel serverless functions have ephemeral
+filesystems, so do not use that deployment to persist newly run benchmark
+results; use it for recommendations from the stored data.
+
 ### 1. Start MongoDB
 Make sure MongoDB is running locally:
 ```bash
